@@ -6,6 +6,7 @@
 # you may not use this file except in compliance with the License.
 #
 # Probably the 3rd bad apple coming
+# Enviroment variables
 
 # Export home as en environment-wide thingy
 export HOME=${SEMAPHORE_PROJECT_DIR}/..
@@ -35,4 +36,5 @@ else
         export COMPILER='GCC 9.x'
 fi
 
-export telegram=
+export telegram=${SCRIPTS}/telegram/telegram
+
