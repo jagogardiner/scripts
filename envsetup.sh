@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2019 Raphielscape LLC.
+# Copyright (C) 2019 nysascape
 #
 # Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
@@ -9,6 +9,7 @@
 
 # Export home as en environment-wide thingy
 export HOME=${SEMAPHORE_PROJECT_DIR}/..
+export SCRIPTS=${HOME}/scripts
 
 # Pick your poison
 if [[ "$*" =~ "clang"* ]]; then
@@ -33,3 +34,5 @@ else
         git clone https://github.com/kdrag0n/arm-eabi-gcc -b 9.x --depth=1 "${HOME}/gcc32"
         export COMPILER='GCC 9.x'
 fi
+
+export telegram=
