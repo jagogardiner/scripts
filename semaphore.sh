@@ -65,7 +65,7 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Device: <b>${DEVICE}</b>" \
 	"Branch: <code>${BRANCH}</code>" \
 	"Commit point: <code>${COMMIT_POINT}</code>" \
-	"Under <code>${CIPROVIDER}</code" \
+	"Under <code>${CIPROVIDER}</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
 	"Started on <code>$(whoami)</code>"
 
