@@ -46,7 +46,7 @@ export COMPILER_STRING COMPILER_TYPE KERNELDIR SCRIPTS OUTDIR
 
 git clone https://github.com/fabianonline/telegram.sh/ telegram
 # Export Telegram.sh
-TELEGRAM=${SCRIPTS}/telegram/telegram
+TELEGRAM=${KERNELDIR}/telegram/telegram
 
 # Examine our compilation threads
 # 2x of our available CPUs
