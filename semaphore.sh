@@ -24,20 +24,20 @@ PARSE_ORIGIN="$(git config --get remote.origin.url)"
 COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
 # Do some silly defconfig replacements
-if [[ "${BRANCH}" =~ "staging"* ]]; then
+if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
 	# For staging branch
 	KERNELTYPE=nightly
 	KERNELNAME="Acrux-${RELEASE_VERSION}-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
 	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
-elif [[ "${BRANCH}" =~ "pie"* ]]; then
+elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
 	# For stable (pie) branch
 	KERNELTYPE=stable
 	ERNELNAME="Acrux-${RELEASE_VERSION}-Release-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
 	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
 else
 	# Dunno when this will happen but we will cover, just in case
-	KERNELTYPE=${BRANCH}
-	KERNELNAME="Acrux-${RELEASE_VERSION}-${BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELTYPE=${PARSE_BRANCH}
+	KERNELNAME="Acrux-${RELEASE_VERSION}-${PARSE_BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
 	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
 fi
 
