@@ -7,9 +7,6 @@
 #
 # Semaphore build script for Acrux
 
-# Just to make sure bc Semaphore can be drunk
-cd "${KERNELDIR}" || exit 
-
 # Make sure our branch is availiable
 BRANCH=${PARSE_BRANCH}
 
