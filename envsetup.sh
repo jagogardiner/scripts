@@ -44,6 +44,7 @@ fi
 
 export COMPILER_STRING COMPILER_TYPE KERNELDIR SCRIPTS OUTDIR
 
+git clone https://github.com/fabianonline/telegram.sh/ telegram
 # Export Telegram.sh
 TELEGRAM=${SCRIPTS}/telegram/telegram
 
