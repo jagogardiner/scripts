@@ -75,7 +75,7 @@ tg_groupcast "Acrux compilation clocked at $(date +%Y%m%d-%H%M)!"
 tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Device: <b>${DEVICE}</b>" \
 	"Kernel: <code>Acrux, release ${KERNELRELEASE}</code>" \
-	"Branch: <code>${PARSE-BRANCH}</code>" \
+	"Branch: <code>${PARSE_BRANCH}</code>" \
 	"Commit point: <code>${COMMIT_POINT}</code>" \
 	"Under <code>${CIPROVIDER}</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
