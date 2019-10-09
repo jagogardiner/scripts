@@ -58,3 +58,6 @@ export TG_GROUP="-1001435271206"
 export PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 export PARSE_ORIGIN="$(git config --get remote.origin.url)"
 export COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
+
+# We still need to go to kernel directory to build
+cd ${KERNELDIR}
