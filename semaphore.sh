@@ -27,7 +27,7 @@ COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
 	# For staging branch
 	KERNELTYPE=nightly
-	KERNELNAME="Acrux-${RELEASE_VERSION}-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELNAME="Acrux-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
 	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
 elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
 	# For stable (pie) branch
@@ -74,7 +74,7 @@ tg_channelcast() {
 tg_groupcast "Acrux compilation clocked at $(date +%Y%m%d-%H%M)!"
 tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Device: <b>${DEVICE}</b>" \
-	"Branch: <code>${BRANCH}</code>" \
+	"Branch: <code>${PARSE-BRANCH}</code>" \
 	"Commit point: <code>${COMMIT_POINT}</code>" \
 	"Under <code>${CIPROVIDER}</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
