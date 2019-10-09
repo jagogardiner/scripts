@@ -20,9 +20,9 @@ export TELEGRAM_TOKEN=${BOT_API_TOKEN}
 DEVICE=Platina
 CIPROVIDER=Semaphore
 
-# Clone our AnyKernel3 branch to HOME
-git clone https://github.com/nysascape/Acrux-AK3 -b master ${HOME}/anykernel3
-export ANYKERNEL = ${HOME}/anykernel3
+# Clone our AnyKernel3 branch to KERNELDIR
+git clone https://github.com/nysascape/Acrux-AK3 -b master ${KERNELDIR}/anykernel3
+export ANYKERNEL = ${KERNELDIR}/anykernel3
 
 # Do some silly defconfig replacements
 if [[ "${BRANCH}" =~ "staging"* ]]; then
@@ -77,17 +77,17 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 
 # Make is shit so I have to pass thru some toolchains
 # Let's build, anyway
-PATH="${HOME}/clang/bin:${PATH}"
+PATH="${KERNELDIR}/clang/bin:${PATH}"
 START=$(date +"%s")
 make O=out ARCH=arm64 acrux_defconfig
 if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
-        make -j${JOBS} O=out ARCH=arm64 CC=clang CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="${HOME}/gcc/bin/aarch64-linux-gnu-" CROSS_COMPILE_ARM32="${HOME}/gcc32/bin/arm-maestro-linux-gnueabi-"
+        make -j${JOBS} O=out ARCH=arm64 CC=clang CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-linux-gnu-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
 elif [[ "${COMPILER_TYPE}" =~ "GCC10"* ]]; then
-	make -j${JOBS} O=out ARCH=arm64 CROSS_COMPILE="${HOME}/gcc/bin/aarch64-raphiel-elf-" CROSS_COMPILE_ARM32="${HOME}/gcc32/bin/arm-maestro-linux-gnueabi-"
+	make -j${JOBS} O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-raphiel-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
 elif [[ "${COMPILER_TYPE}" =~ "GCC4.9"* ]]; then
-	make -j${JOBS} O=out ARCH=arm64 CROSS_COMPILE="${HOME}/gcc/bin/aarch64-linux-android-"
+	make -j${JOBS} O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-linux-android-"
 else
-	make -j${JOBS} O=out ARCH=arm64 CROSS_COMPILE="${HOME}/gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="${HOME}/gcc32/bin/arm-eabi-"
+	make -j${JOBS} O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-eabi-"
 fi
 
 END=$(date +"%s")
