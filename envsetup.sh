@@ -9,7 +9,8 @@
 # Enviroment variables
 
 # Export KERNELDIR as en environment-wide thingy
-export KERNELDIR=$(pwd)
+# We start in scripts, so like, don't clone things there
+export KERNELDIR=$(pwd)/..
 export SCRIPTS=${KERNELDIR}/scripts
 export OUTDIR=${KERNELDIR}/out
 
