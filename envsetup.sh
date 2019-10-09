@@ -9,7 +9,7 @@
 # Enviroment variables
 
 # Export KERNELDIR as en environment-wide thingy
-export KERNELDIR=${SEMAPHORE_PROJECT_DIR}
+export KERNELDIR=$(pwd)
 export SCRIPTS=${KERNELDIR}/scripts
 export OUTDIR=${KERNELDIR}/out
 
