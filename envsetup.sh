@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (C) 2019 nysascape
 #
@@ -61,4 +61,4 @@ export PARSE_ORIGIN="$(git config --get remote.origin.url)"
 export COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
 # We still need to go to kernel directory to build
-cd ${KERNELDIR}
+cd "${KERNELDIR}" || exit
