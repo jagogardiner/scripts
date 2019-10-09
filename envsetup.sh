@@ -10,7 +10,7 @@
 
 # Export KERNELDIR as en environment-wide thingy
 # We start in scripts, so like, don't clone things there
-export KERNELDIR=$(pwd)/..
+export KERNELDIR="/home/runner/${SEMAPHORE_PROJECT_NAME}"
 export SCRIPTS=${KERNELDIR}/scripts
 export OUTDIR=${KERNELDIR}/out
 
