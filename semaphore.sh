@@ -27,18 +27,18 @@ COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
 	# For staging branch
 	KERNELTYPE=nightly
-	KERNELNAME="Acrux-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
+	KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELRELEASE}""/g" arch/arm64/configs/acrux_defconfig
 elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
 	# For stable (pie) branch
 	KERNELTYPE=stable
-	ERNELNAME="Acrux-${RELEASE_VERSION}-Release-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
+	ERNELNAME="Acrux-${KERNELRELEASE}-Release-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELRELEASE}""/g" arch/arm64/configs/acrux_defconfig
 else
 	# Dunno when this will happen but we will cover, just in case
 	KERNELTYPE=${PARSE_BRANCH}
-	KERNELNAME="Acrux-${RELEASE_VERSION}-${PARSE_BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
+	KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELRELEASE}""/g" arch/arm64/configs/acrux_defconfig
 fi
 
 export KERNELTYPE KERNELNAME
@@ -74,6 +74,7 @@ tg_channelcast() {
 tg_groupcast "Acrux compilation clocked at $(date +%Y%m%d-%H%M)!"
 tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Device: <b>${DEVICE}</b>" \
+	"Kernel: <code>Acrux, release ${KERNELRELEASE}</code>" \
 	"Branch: <code>${PARSE-BRANCH}</code>" \
 	"Commit point: <code>${COMMIT_POINT}</code>" \
 	"Under <code>${CIPROVIDER}</code>" \
