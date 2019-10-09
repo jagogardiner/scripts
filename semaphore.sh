@@ -18,6 +18,11 @@ CIPROVIDER=Semaphore
 git clone https://github.com/nysascape/Acrux-AK3 -b master anykernel3
 export ANYKERNEL=$(pwd)/anykernel3
 
+# Parse git things
+PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+PARSE_ORIGIN="$(git config --get remote.origin.url)"
+COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
+
 # Do some silly defconfig replacements
 if [[ "${BRANCH}" =~ "staging"* ]]; then
 	# For staging branch
