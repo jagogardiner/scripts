@@ -54,13 +54,9 @@ TELEGRAM=${KERNELDIR}/telegram/telegram
 CPU="$(grep -c '^processor' /proc/cpuinfo)"
 JOBS="$(( CPU * 2 ))"
 
-# Export our Telegram chat ID(s) - more than one is used
-CI_CHANNEL="-1001420038245"
-TG_GROUP="-1001435271206"
-
 # Parse git things
 PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PARSE_ORIGIN="$(git config --get remote.origin.url)"
 COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
-export TELEGRAM JOBS CI_CHANNEL TG_GROUP PARSE_BRANCH PARSE_ORIGIN COMMIT_POINT
+export TELEGRAM JOBS PARSE_BRANCH PARSE_ORIGIN COMMIT_POINT

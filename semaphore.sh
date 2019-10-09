@@ -21,23 +21,29 @@ export ANYKERNEL=$(pwd)/anykernel3
 # Do some silly defconfig replacements
 if [[ "${BRANCH}" =~ "staging"* ]]; then
 	# For staging branch
-	export KERNELTYPE=nightly
-	export KERNELNAME="Acrux-${RELEASE_VERSION}-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELTYPE=nightly
+	KERNELNAME="Acrux-${RELEASE_VERSION}-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
 	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
 elif [[ "${BRANCH}" =~ "pie"* ]]; then
 	# For stable (pie) branch
-	export KERNELTYPE=stable
-	export KERNELNAME="Acrux-${RELEASE_VERSION}-Release-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELTYPE=stable
+	ERNELNAME="Acrux-${RELEASE_VERSION}-Release-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
 	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
 else
 	# Dunno when this will happen but we will cover, just in case
-	export KERNELTYPE=${BRANCH}
-	export KERNELNAME="Acrux-${RELEASE_VERSION}-${BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELTYPE=${BRANCH}
+	KERNELNAME="Acrux-${RELEASE_VERSION}-${BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
 	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELNAME}""/g" arch/arm64/configs/acrux_defconfig
 fi
 
+export KERNELTYPE KERNELNAME
+
 # Might as well export our zip
 export ZIPNAME="${KERNELNAME}.zip"
+
+# Our TG channels
+CI_CHANNEL="-1001420038245"
+TG_GROUP="-1001435271206"
 
 # Send to main group
 tg_groupcast() {
@@ -60,7 +66,7 @@ tg_channelcast() {
 }
 
 # Let's announce our naisu new kernel!
-tg_groupcast "Acrux ${KERNELTYPE} compilation clocked at $(date +%Y%m%d-%H%M)!"
+tg_groupcast "Acrux compilation clocked at $(date +%Y%m%d-%H%M)!"
 tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Device: <b>${DEVICE}</b>" \
 	"Branch: <code>${BRANCH}</code>" \
