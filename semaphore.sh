@@ -7,6 +7,28 @@
 #
 # Semaphore build script for Acrux
 
+KERNELDIR="$(pwd)"
+SCRIPTS=${KERNELDIR}/kernelscripts
+OUTDIR=${KERNELDIR}/out
+
+# Export Telegram.sh
+export telegram=${SCRIPTS}/telegram/telegram
+
+# Examine our compilation threads
+# 2x of our available CPUs
+# Kanged from @raphielscape <3
+CPU="$(grep -c '^processor' /proc/cpuinfo)"
+export JOBS="$(( CPU * 2 ))"
+
+# Export our Telegram chat ID(s) - more than one is used
+export CI_CHANNEL="-1001420038245"
+export TG_GROUP="-1001435271206"
+
+# Parse git things
+export PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+export PARSE_ORIGIN="$(git config --get remote.origin.url)"
+export COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
+
 # Make sure our branch is availiable
 BRANCH=${PARSE_BRANCH}
 
