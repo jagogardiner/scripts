@@ -28,17 +28,17 @@ if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
 	# For staging branch
 	KERNELTYPE=nightly
 	KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELRELEASE}""/g" arch/arm64/configs/acrux_defconfig
+        echo "CONFIG_LOCALVERSION="${KERNELNAME}"" >> arch/arm64/configs/acrux_defconfig
 elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
 	# For stable (pie) branch
 	KERNELTYPE=stable
 	ERNELNAME="Acrux-${KERNELRELEASE}-Release-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELRELEASE}""/g" arch/arm64/configs/acrux_defconfig
+	echo "CONFIG_LOCALVERSION="${KERNELNAME}"" >> arch/arm64/configs/acrux_defconfig
 else
 	# Dunno when this will happen but we will cover, just in case
 	KERNELTYPE=${PARSE_BRANCH}
 	KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-	sed -i "50s/.*/CONFIG_LOCALVERSION=""${KERNELRELEASE}""/g" arch/arm64/configs/acrux_defconfig
+        echo "CONFIG_LOCALVERSION="${KERNELNAME}"" >> arch/arm64/configs/acrux_defconfig
 fi
 
 export KERNELTYPE KERNELNAME
