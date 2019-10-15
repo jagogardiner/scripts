@@ -44,6 +44,7 @@ fi
 export KERNELTYPE KERNELNAME
 
 # Might as well export our zip
+export TEMPZIPNAME="${TEMPZIPNAME}-unsigned.zip"
 export ZIPNAME="${KERNELNAME}.zip"
 
 # Our TG channels
@@ -85,6 +86,13 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 # Let's build, anyway
 PATH="${KERNELDIR}/clang/bin:${PATH}"
 START=$(date +"%s")
+
+mkdir ${KERNELDIR}/out
+
+##Cache the out dir
+ln -s ${SEMAPHORE_CACHE_DIR}/out ${KERNELDIR}/out
+rm -rf "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb
+
 make O=out ARCH=arm64 acrux_defconfig
 if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
         make -j"${JOBS}" O=out ARCH=arm64 CC=clang CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-linux-gnu-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
@@ -99,20 +107,27 @@ fi
 END=$(date +"%s")
 DIFF=$(( END - START ))
 
+## Check if compilation is done successfully.
+
+if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
+	echo -e "Kernel compilation failed, See buildlog to fix errors"
+	tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
+	tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
+	exit 1
+fi
+
 # Copy our !!hopefully!! compiled kernel
 cp "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL}"/
 
 # POST ZIP OR FAILURE
 cd "${ANYKERNEL}" || exit
-zip -r9 "${ZIPNAME}" *
-CHECKER=$(ls -l "${ZIPNAME}" | awk '{print $5}')
+zip -r9 "${TEMPZIPNAME}" *
+CHECKER=$(ls -l "${TEMPZIPNAME}" | awk '{print $5}')
 
-if (($((CHECKER / 1048576)) > 5)); then
-	"${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
-	tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
-	tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @acruxci"
-else
-	tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
-	tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
-	exit 1;
-fi
+	## Sign the zip before sending it to telegram
+curl -sLo zipsigner-3.0.jar https://raw.githubusercontent.com/baalajimaestro/AnyKernel2/master/zipsigner-3.0.jar
+java -jar zipsigner-3.0.jar ${TEMP_ZIP} ${FINAL_ZIP}
+
+"${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
+tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
+tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @acruxci"
