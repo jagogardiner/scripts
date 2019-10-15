@@ -122,11 +122,10 @@ cp "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL}"/
 # POST ZIP OR FAILURE
 cd "${ANYKERNEL}" || exit
 zip -r9 "${TEMPZIPNAME}" *
-CHECKER=$(ls -l "${TEMPZIPNAME}" | awk '{print $5}')
 
-	## Sign the zip before sending it to telegram
+## Sign the zip before sending it to telegram
 curl -sLo zipsigner-3.0.jar https://raw.githubusercontent.com/baalajimaestro/AnyKernel2/master/zipsigner-3.0.jar
-java -jar zipsigner-3.0.jar ${TEMP_ZIP} ${FINAL_ZIP}
+java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
 
 "${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
 tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
