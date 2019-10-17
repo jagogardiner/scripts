@@ -43,6 +43,12 @@ fi
 
 export KERNELTYPE KERNELNAME
 
+# Workaround for long af kernel strings
+git config --global user.name "nysascape"
+git config --global user.email "nysadev@raphielgang.org"
+git add .
+git commit -m "stop adding dirty"
+
 # Might as well export our zip
 export TEMPZIPNAME="${TEMPZIPNAME}-unsigned.zip"
 export ZIPNAME="${KERNELNAME}.zip"
