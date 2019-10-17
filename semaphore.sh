@@ -50,7 +50,7 @@ git add .
 git commit -m "stop adding dirty"
 
 # Might as well export our zip
-export TEMPZIPNAME="${TEMPZIPNAME}-unsigned.zip"
+export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
 export ZIPNAME="${KERNELNAME}.zip"
 
 # Our TG channels
