@@ -5,14 +5,14 @@
 # Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
 #
-# Semaphore build script for Acrux
+# Drone build script for Acrux
 
 # Make sure our fekking token is exported ig?
 export TELEGRAM_TOKEN=${BOT_API_TOKEN}
 
 # Some misc enviroment vars
 DEVICE=Platina
-CIPROVIDER=Semaphore
+CIPROVIDER=Drone
 
 # Clone our AnyKernel3 branch to KERNELDIR
 git clone https://github.com/nysascape/Acrux-AK3 -b master anykernel3
