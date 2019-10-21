@@ -37,7 +37,7 @@ elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
 else
 	# Dunno when this will happen but we will cover, just in case
 	KERNELTYPE=${PARSE_BRANCH}
-	KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELNAME="Acrux-${KERNELRELEASE}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
         sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
 fi
 
