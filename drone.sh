@@ -121,7 +121,7 @@ cp "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL}"/
 
 # POST ZIP OR FAILURE
 cd "${ANYKERNEL}" || exit
-zip -r9 "${TEMPZIPNAME}" *
+command zip -rT9 "${TEMPZIPNAME}" -- *
 
 ## Sign the zip before sending it to telegram
 curl -sLo zipsigner-3.0.jar https://raw.githubusercontent.com/baalajimaestro/AnyKernel2/master/zipsigner-3.0.jar
