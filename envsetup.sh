@@ -39,10 +39,10 @@ elif [[ "$*" =~ "gcc4.9"* ]]; then
 	COMPILER_TYPE='GCC4.9'
 else
         # Default to GCC from kdrag0n
-        git clone https://github.com/kdrag0n/aarch64-elf-gcc -b 9.x --depth=1 "${KERNELDIR}/gcc"
-        git clone https://github.com/kdrag0n/arm-eabi-gcc -b 9.x --depth=1 "${KERNELDIR}/gcc32"
-        COMPILER_STRING='GCC 9.x'
-	COMPILER_TYPE='GCC9.x'
+        git clone https://github.com/baalajimaestro/aarch64-maestro-linux-android -b 20102019-9.2.1 --depth=1 "${KERNELDIR}/gcc"
+        git clone https://github.com/baalajimaestro/arm-maestro-linux-gnueabi -b 20102019 --depth=1 "${KERNELDIR}/gcc32"
+        COMPILER_STRING='GCC 9'
+	COMPILER_TYPE='GCC9'
 fi
 
 export COMPILER_STRING COMPILER_TYPE KERNELDIR SCRIPTS OUTDIR
