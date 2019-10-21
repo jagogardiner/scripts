@@ -18,8 +18,10 @@ OUTDIR=${KERNELDIR}/out
 if [[ "$*" =~ "clang"* ]]; then
         git clone https://github.com/RaphielGang/aarch64-linux-gnu-8.x.git --depth=1 "${KERNELDIR}/gcc"
         git clone https://github.com/baalajimaestro/arm-maestro-linux-gnueabi/ -b 240719 --depth=1 "${KERNELDIR}/gcc32"
-        git clone https://github.com/RaphielGang/aosp-clang --depth=1 "${KERNELDIR}"/clang
-        COMPILER_STRING='AOSP Clang (latest)'
+        wget -O proton_clang.tar.zst https://kdrag0n.dev/files/redirector/proton_clang-latest.tar.zst
+	mkdir "${KERNELDIR}"/clang
+	tar -I zstd -xvf proton_clang.tar.zst -C "${KERNELDIR}"/clang
+        COMPILER_STRING='Proton Clang (latest)'
 	COMPILER_TYPE='clang'
 elif [[ "$*" =~ "gcc10"* ]]; then
         git clone https://github.com/RaphielGang/aarch64-raph-linux-android -b elf --depth=1 "${KERNELDIR}/gcc"
