@@ -7,49 +7,14 @@
 #
 # Drone build script for Acrux
 
-# Make sure our fekking token is exported ig?
-export TELEGRAM_TOKEN=${BOT_API_TOKEN}
-
-# Some misc enviroment vars
-DEVICE=Platina
-CIPROVIDER=Drone
+# shellcheck source=/dev/null
+. "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"/envsetup.sh
 
 # Clone our AnyKernel3 branch to KERNELDIR
 git clone https://github.com/nysascape/Acrux-AK3 -b master anykernel3
-export ANYKERNEL=$(pwd)/anykernel3
 
-# Parse git things
-PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-PARSE_ORIGIN="$(git config --get remote.origin.url)"
-COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
-
-# Do some silly defconfig replacements
-if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
-	# For staging branch
-	KERNELTYPE=nightly
-	KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-	sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
-elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
-	# For stable (pie) branch
-	KERNELTYPE=stable
-	KERNELNAME="Acrux-${KERNELRELEASE}-Release-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
-else
-	# Dunno when this will happen but we will cover, just in case
-	KERNELTYPE=${PARSE_BRANCH}
-	KERNELNAME="Acrux-${KERNELRELEASE}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
-fi
-
-export KERNELTYPE KERNELNAME
-
-# Might as well export our zip
-export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
-export ZIPNAME="${KERNELNAME}.zip"
-
-# Our TG channels
-CI_CHANNEL="-1001420038245"
-TG_GROUP="-1001435271206"
+# Clone Telegram binaries
+git clone https://github.com/fabianonline/telegram.sh/ telegram
 
 # Send to main group
 tg_groupcast() {
@@ -87,10 +52,10 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 PATH="${KERNELDIR}/clang/bin:${PATH}"
 START=$(date +"%s")
 
-mkdir ${KERNELDIR}/out
+mkdir "${KERNELDIR}"/out
 
 ##Cache the out dir
-ln -s ${SEMAPHORE_CACHE_DIR}/out ${KERNELDIR}/out
+ln -s "${SEMAPHORE_CACHE_DIR}"/out "${KERNELDIR}"/out
 rm -rf "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb
 
 make O=out ARCH=arm64 acrux_defconfig
@@ -125,7 +90,7 @@ command zip -rT9 "${TEMPZIPNAME}" -- *
 
 ## Sign the zip before sending it to telegram
 curl -sLo zipsigner-3.0.jar https://raw.githubusercontent.com/baalajimaestro/AnyKernel2/master/zipsigner-3.0.jar
-java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
+java -jar zipsigner-3.0.jar "${TEMPZIPNAME}" "${ZIPNAME}"
 
 "${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
 tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
