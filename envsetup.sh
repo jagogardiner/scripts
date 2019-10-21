@@ -18,6 +18,7 @@ OUTDIR=${KERNELDIR}/out
 if [[ "$*" =~ "clang"* ]]; then
         git clone https://github.com/RaphielGang/aarch64-linux-gnu-8.x.git --depth=1 "${KERNELDIR}/gcc"
         git clone https://github.com/baalajimaestro/arm-maestro-linux-gnueabi/ -b 240719 --depth=1 "${KERNELDIR}/gcc32"
+	yum install zstd
         wget -O proton_clang.tar.zst https://kdrag0n.dev/files/redirector/proton_clang-latest.tar.zst
 	mkdir "${KERNELDIR}"/clang
 	tar -I zstd -xvf proton_clang.tar.zst -C "${KERNELDIR}"/clang
