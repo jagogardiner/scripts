@@ -13,6 +13,7 @@ export TELEGRAM_TOKEN=${BOT_API_TOKEN}
 # Some misc enviroment vars
 DEVICE=Platina
 CIPROVIDER=Semaphore
+KERNELFW=Global
 
 # Clone our AnyKernel3 branch to KERNELDIR
 git clone https://github.com/nysascape/Acrux-AK3 -b master anykernel3
@@ -27,17 +28,17 @@ COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
 	# For staging branch
 	KERNELTYPE=nightly
-	KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%Y%m%d-%H%M)"
 	sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
 elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
 	# For stable (pie) branch
 	KERNELTYPE=stable
-	KERNELNAME="Acrux-${KERNELRELEASE}-Release-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELNAME="Acrux-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%Y%m%d-%H%M)"
         sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
 else
 	# Dunno when this will happen but we will cover, just in case
 	KERNELTYPE=${PARSE_BRANCH}
-	KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${COMPILER_TYPE}-$(date +%Y%m%d-%H%M)"
+	KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${KERNELFW}-$(date +%Y%m%d-%H%M)"
         sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
 fi
 
@@ -110,11 +111,7 @@ else
 	make -j"${JOBS}" O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-eabi-"
 fi
 
-END=$(date +"%s")
-DIFF=$(( END - START ))
-
 ## Check if compilation is done successfully.
-
 if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	echo -e "Kernel compilation failed, See buildlog to fix errors"
 	tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
@@ -134,5 +131,68 @@ curl -sLo zipsigner-3.0.jar https://raw.githubusercontent.com/baalajimaestro/Any
 java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
 
 "${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
+
+# Build China fixes
+KERNELFW=China
+git fetch https://github.com/nysascape/kernel_xiaomi_acrux oem
+git cherry-pick dc8e417a8d54d8c0893f19b97fb448d2a72b058d
+
+# Do some silly defconfig replacements
+if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
+        # For staging branch
+        KERNELTYPE=nightly
+        KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%Y%m%d-%H%M)"
+        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
+        # For stable (pie) branch
+        KERNELTYPE=stable
+        KERNELNAME="Acrux-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%Y%m%d-%H%M)"
+        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+else
+        # Dunno when this will happen but we will cover, just in case
+        KERNELTYPE=${PARSE_BRANCH}
+        KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${KERNELFW}-$(date +%Y%m%d-%H%M)"
+        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+fi
+
+export KERNELTYPE KERNELNAME
+
+# Might as well export our zip
+export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
+export ZIPNAME="${KERNELNAME}.zip"
+make O=out ARCH=arm64 acrux_defconfig
+if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
+        make -j"${JOBS}" O=out ARCH=arm64 CC=clang CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-linux-gnu-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
+elif [[ "${COMPILER_TYPE}" =~ "GCC10"* ]]; then
+        make -j"${JOBS}" O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-raphiel-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
+elif [[ "${COMPILER_TYPE}" =~ "GCC4.9"* ]]; then
+        make -j"${JOBS}" O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-linux-android-"
+else
+        make -j"${JOBS}" O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-eabi-"
+fi
+
+## Check if compilation is done successfully.
+if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
+        echo -e "Kernel compilation failed !!(FOR CHINA FW)!!, See buildlog to fix errors"
+        tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
+        tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
+        exit 1
+fi
+
+# Copy our !!hopefully!! compiled kernel
+cp "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL}"/
+
+# POST ZIP OR FAILURE
+cd "${ANYKERNEL}" || exit
+zip -r9 "${TEMPZIPNAME}" *
+
+## Sign the zip before sending it to telegram
+curl -sLo zipsigner-3.0.jar https://raw.githubusercontent.com/baalajimaestro/AnyKernel2/master/zipsigner-3.0.jar
+java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
+
+"${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
+
+END=$(date +"%s")
+DIFF=$(( END - START ))
 tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @acruxci"
