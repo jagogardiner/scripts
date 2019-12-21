@@ -134,6 +134,8 @@ java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
 
 "${TELEGRAM}" -f "$ZIPNAME" -c "${CI_CHANNEL}"
 
+cd ..
+
 # Build China fixes
 KERNELFW=China
 git fetch https://github.com/nysascape/kernel_xiaomi_acrux oem
