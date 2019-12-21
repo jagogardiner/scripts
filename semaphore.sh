@@ -136,6 +136,9 @@ java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
 
 cd ..
 
+rm -rf "${ANYKERNEL}"
+git clone https://github.com/nysascape/Acrux-AK3 -b master anykernel3
+
 # Build China fixes
 KERNELFW=China
 git fetch https://github.com/nysascape/kernel_xiaomi_acrux oem
