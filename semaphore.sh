@@ -113,6 +113,8 @@ fi
 
 ## Check if compilation is done successfully.
 if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
+	END=$(date +"%s")
+	DIFF=$(( END - START ))
 	echo -e "Kernel compilation failed, See buildlog to fix errors"
 	tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
 	tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
@@ -173,6 +175,8 @@ fi
 
 ## Check if compilation is done successfully.
 if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
+	END=$(date +"%s")
+	DIFF=$(( END - START ))
         echo -e "Kernel compilation failed !!(FOR CHINA FW)!!, See buildlog to fix errors"
         tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
         tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
