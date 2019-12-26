@@ -8,7 +8,7 @@
 # Script for my Arch installs. Designed to be ran straight after the first reboot (although there's probably stuff I missed!!!)
 
 # Install a bunch of packages I use
-sudo pacman -S zsh adb fastboot curl git code neofetch iwd dhcpcd i3 i3status dmenu i3lock feh conky rofi scrot gnome-terminal lightdm gnome-backgrounds lightdm-gtk-greeter
+sudo pacman -S zsh adb fastboot curl git code neofetch iwd dhcpcd i3 i3status dmenu i3lock feh conky rofi scrot gnome-terminal lightdm gnome-backgrounds lightdm-gtk-greeter telegram-desktop ttf-opensans
 
 # Enable a few systemd processes
 sudo systemctl enable iwd
