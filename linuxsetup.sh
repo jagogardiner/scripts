@@ -5,12 +5,48 @@
 # Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
 #
-# Let's install some packages
-sudo apt-get -y install bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev zsh
+# Script for my Arch installs. Designed to be ran straight after the first reboot (although there's probably stuff I missed!!!)
+
+# Install a bunch of packages I use
+sudo pacman -S zsh adb fastboot curl git code neofetch iwd dhcpcd i3 i3status dmenu i3lock feh conky rofi scrot gnome-terminal lightdm gnome-backgrounds
+
+# Enable a few systemd processes
+sudo systemctl enable iwd
+sudo systemctl enable lightdm
+sudo systemctl enable dhcpcd
+
+# Install oh-my-zsh
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# Install aurpkg
+git clone --depth=1 https://aur.archlinux.org/aurpkg.git /tmp/aurpkg
+cd /tmp/aurpkg
+makepkg -s
+git clone --depth=1 https://aur.archlinux.org/aurpkg.git
+cd ~
+
+# Install Google Chrome
+aurpkg -S google-chrome
+
+# Configure lightdm greeter to use Slick
+aurpkg -S lightdm-slick-greeter
+sed -i '/#greeter-session/c\greeter-session=lightdm-slick-greeter' /etc/lightdm/lightdm.conf
+
+# Setup i3
+rm -rf ~/.config/i3 # incase i3 config already exists
+git clone https://github.com/nysascape/dotfiles ~/dotfiles
+mv ~/dotfiles/i3 ~/.config/i3
+
+# Setup Pure ZSH theme
+mkdir -p "$HOME/.zsh"
+git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
+echo 'fpath+=("$HOME/.zsh/pure")' >> ~/.zshrc
+echo 'autoload -U promptinit; promptinit' >> ~/.zshrc
+echo 'prompt pure' >> ~/.zshrc
 
 # Clone in my aliases
-git clone https://github.com/nysascape/aliases ~/aliases
-sed -i 's#.bash_aliases#aliases/aliases#g' ~/.bashrc
+git clone https://github.com/nysascape/aliases ~/.aliases
+echo "source ~/.aliases/aliases" >> ~/.zshrc
 
 # Git configurations
 git config --global user.name "nysascape"
@@ -21,19 +57,10 @@ git config --global credential.helper store
 git clone https://github.com/kdrag0n/aarch64-elf-gcc -b 9.x --depth=1 ~/gcc9
 git clone https://github.com/kdrag0n/arm-eabi-gcc -b 9.x --depth=1 ~/gcc932
 
-# Clone repo (thanks to LineageOS Wiki)
+# Repo (thanks to LineageOS)
 mkdir -p ~/bin
 curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
 
-# Add platform tools to PATH
-wget -O ~/tools.zip https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-unzip -d ~/.platform_tools ~/tools.zip
-echo "if [ -d "$HOME/.platform_tools/platform-tools" ] ; then" >> ~/.profile
-echo "    PATH="$HOME/.platform_tools/platform-tools:$PATH"" >> ~/.profile
-echo "fi" >> ~/.profile
-source ~/.profile
-rm ~/tools.zip
-
-# Source our bashrc just so our aliases take effect
-source ~/.bashrc
+# Source our zshrc just so our aliases take effect
+source ~/.zshrc
