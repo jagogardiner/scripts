@@ -7,20 +7,33 @@
 #
 # Local build script for Acrux.
 
-function cleanup
+function cleanupfail1
 {
         rm -rf ${ANYKERNEL}
         rm -rf ${TELEGRAM}
-        cd ${ACRUXDIR}
+	cd ../
+	rm -rf telegram
+        cd $1
         git reset --hard HEAD^
 }
 
+function cleanupfail2
+{
+        rm -rf ${ANYKERNEL}
+        rm -rf ${TELEGRAM}
+        cd ../
+        rm -rf telegram
+        cd $1
+        git reset --hard HEAD~2
+}
+
 ACRUXPATH=$1
+KERNELRELEASE=$2
 SCRIPTSPATH=$(pwd)
 OUTDIR=${ACRUXPATH}/out
 
 # Make sure our fekking token is exported ig?
-export TELEGRAM_TOKEN=$2
+export TELEGRAM_TOKEN=$3
 
 # Some misc enviroment vars
 DEVICE=Platina
@@ -113,7 +126,7 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Kernel: <code>Acrux, release ${KERNELRELEASE}</code>" \
 	"Branch: <code>${PARSE_BRANCH}</code>" \
 	"Commit point: <code>${COMMIT_POINT}</code>" \
-	"Under <code>${CIPROVIDER}</code>" \
+	"Under <code>${CIPROVIDER}, with $(nproc --all) cores</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>" \
 	"Started on <code>$(whoami)</code>"
 
@@ -132,7 +145,7 @@ if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	echo -e "Kernel compilation failed, See buildlog to fix errors"
 	tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
 	tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
-	cleanup
+	cleanupfail1
 	exit 1
 fi
 
@@ -191,7 +204,7 @@ if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
         echo -e "Kernel compilation failed !!(FOR CHINA FW)!!, See buildlog to fix errors"
         tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
         tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @acruxci"
-	cleanup
+	cleanupfail2
         exit 1
 fi
 
@@ -213,4 +226,4 @@ DIFF=$(( END - START ))
 tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
 tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @acruxci"
 
-cleanup
+cleanupfail2
