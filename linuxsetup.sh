@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2019 nysascape
 #
-# Licensed under the Raphielscape Public License, Version 1.c (the "License");
+# Licensed under the Raphielscape Public License, Version 1.d (the "License");
 # you may not use this file except in compliance with the License.
 #
 # Script for my Arch installs. Designed to be ran straight after the first reboot (although there's probably stuff I missed!!!)
