@@ -62,7 +62,7 @@ chmod a+x ~/bin/repo
 source ~/.zshrc
 
 # Add the Gerrit change-id hook
-mkdir ~/.git/hooks
+mkdir -p ~/.git/hooks
 git config --global core.hooksPath ~/.git/hooks
 curl -Lo ~/.git/hooks/commit-msg https://review.aosip.dev/tools/hooks/commit-msg
 chmod u+x ~/.git/hooks/commit-msg
