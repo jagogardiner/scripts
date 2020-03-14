@@ -29,17 +29,17 @@ if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
 	# For staging branch
 	KERNELTYPE=nightly
 	KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%y%m%d-%H%M)"
-	sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
-elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
-	# For stable (pie) branch
+	sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+elif [[ "${PARSE_BRANCH}" =~ "ten"* ]]; then
+	# For stable (ten) branch
 	KERNELTYPE=stable
 	KERNELNAME="Acrux-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
 else
 	# Dunno when this will happen but we will cover, just in case
 	KERNELTYPE=${PARSE_BRANCH}
 	KERNELNAME="Acrux-${KERNELRELEASE}-${PARSE_BRANCH}-${KERNELFW}-$(date +%y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
 fi
 
 export KERNELTYPE KERNELNAME
@@ -141,20 +141,20 @@ git clone https://github.com/nysascape/Acrux-AK3 -b master anykernel3
 
 # Build China fixes
 KERNELFW=China
-git fetch https://github.com/nysascape/kernel_xiaomi_acrux oem
-git cherry-pick dc8e417a8d54d8c0893f19b97fb448d2a72b058d
+# Pick DSP change
+git cherry-pick 23dda5dd32a62488862985d7efc9d148e7f527f5
 
 # Do some silly defconfig replacements
 if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
         # For staging branch
         KERNELTYPE=nightly
         KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
-elif [[ "${PARSE_BRANCH}" =~ "pie"* ]]; then
-        # For stable (pie) branch
+        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+elif [[ "${PARSE_BRANCH}" =~ "ten"* ]]; then
+        # For stable (ten) branch
         KERNELTYPE=stable
         KERNELNAME="Acrux-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%Y%m%d-%H%M)"
-        sed -i "51s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
 else
         # Dunno when this will happen but we will cover, just in case
         KERNELTYPE=${PARSE_BRANCH}
