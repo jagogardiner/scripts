@@ -35,9 +35,9 @@ elif [[ "$*" =~ "gcc4.9"* ]]; then
         COMPILER_STRING='GCC 4.9 from Google'
 	COMPILER_TYPE='GCC4.9'
 else
-        # Default to GCC from kdrag0n
-        git clone https://github.com/kdrag0n/aarch64-elf-gcc -b 9.x --depth=1 "${KERNELDIR}/gcc"
-        git clone https://github.com/kdrag0n/arm-eabi-gcc -b 9.x --depth=1 "${KERNELDIR}/gcc32"
+        # Default to GCC from Arter
+        git clone https://github.com/arter97/arm64-gcc -b 9.x --depth=1 "${KERNELDIR}/gcc"
+        git clone https://github.com/arter97/arm32-gcc -b 9.x --depth=1 "${KERNELDIR}/gcc32"
         COMPILER_STRING='GCC 9.x'
 	COMPILER_TYPE='GCC9.x'
 fi
