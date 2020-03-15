@@ -30,6 +30,8 @@ if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
 	KERNELTYPE=nightly
 	KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%y%m%d-%H%M)"
 	sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+        # Disable LTO on non-release builds
+        sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/g' arch/arm64/configs/acrux_defconfig
 elif [[ "${PARSE_BRANCH}" =~ "ten"* ]]; then
 	# For stable (ten) branch
 	KERNELTYPE=stable

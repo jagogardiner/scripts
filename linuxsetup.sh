@@ -34,8 +34,8 @@ git config --global commit.gpgsign true
 git config --global user.signingkey "A15571E738CE3CD4"
 
 # GCC 9 is always a good thing to have
-git clone https://github.com/kdrag0n/aarch64-elf-gcc -b 9.x --depth=1 ~/gcc9
-git clone https://github.com/kdrag0n/arm-eabi-gcc -b 9.x --depth=1 ~/gcc932
+git clone https://github.com/arter97/arm64-gcc --depth=1 ~/gcc9
+git clone https://github.com/arter97/arm32-gcc --depth=1 ~/gcc932
 
 # Add the Gerrit change-id hook
 mkdir -p ~/.git/hooks
