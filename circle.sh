@@ -5,14 +5,14 @@
 # Licensed under the Raphielscape Public License, Version 1.d (the "License");
 # you may not use this file except in compliance with the License.
 #
-# Semaphore build script for Acrux
+# CI build script for Acrux
 
 # Make sure our fekking token is exported ig?
 export TELEGRAM_TOKEN=${BOT_API_TOKEN}
 
 # Some misc enviroment vars
 DEVICE=Platina
-CIPROVIDER=Semaphore
+CIPROVIDER=CircleCI
 KERNELFW=Global
 
 # Clone our AnyKernel3 branch to KERNELDIR
@@ -100,10 +100,6 @@ START=$(date +"%s")
 
 mkdir ${KERNELDIR}/out
 
-##Cache the out dir
-ln -s ${SEMAPHORE_CACHE_DIR}/out ${KERNELDIR}/out
-rm -rf "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb
-
 make O=out ARCH=arm64 acrux_defconfig
 if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
         make -j"${JOBS}" CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
@@ -120,8 +116,8 @@ if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	END=$(date +"%s")
 	DIFF=$(( END - START ))
 	echo -e "Kernel compilation failed, See buildlog to fix errors"
-	tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
-	tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @nysaci"
+	tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
+	tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @nysascape! @nysaci"
 	exit 1
 fi
 
@@ -192,8 +188,8 @@ if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
 	END=$(date +"%s")
 	DIFF=$(( END - START ))
         echo -e "Kernel compilation failed !!(FOR CHINA FW)!!, See buildlog to fix errors"
-        tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors!"
-        tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check Semaphore for errors @nysascape! @nysaci"
+        tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
+        tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @nysascape! @nysaci"
         exit 1
 fi
 
