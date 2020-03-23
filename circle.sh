@@ -59,8 +59,8 @@ export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
 export ZIPNAME="${KERNELNAME}.zip"
 
 # Our TG channels
-CI_CHANNEL="-1001420038245"
-TG_GROUP="-1001435271206"
+export CI_CHANNEL="-1001420038245"
+export TG_GROUP="-1001435271206"
 
 # Send to main group
 tg_groupcast() {
