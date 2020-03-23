@@ -32,6 +32,8 @@ if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
 	sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
         # Disable LTO on non-release builds
         sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/g' arch/arm64/configs/acrux_defconfig
+        sed -i 's/# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/g' arch/arm64/configs/acrux_defconfig
+        sed -i 's/CONFIG_LTO_CLANG=y/CONFIG_LTO_CLANG=n/g' arch/arm64/configs/acrux_defconfig
 elif [[ "${PARSE_BRANCH}" =~ "ten"* ]]; then
 	# For stable (ten) branch
 	KERNELTYPE=stable
@@ -104,7 +106,7 @@ rm -rf "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb
 
 make O=out ARCH=arm64 acrux_defconfig
 if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
-        make -j"${JOBS}" O=out ARCH=arm64 CC=clang CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-linux-gnu-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
+        make -j"${JOBS}" CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
 elif [[ "${COMPILER_TYPE}" =~ "GCC10"* ]]; then
 	make -j"${JOBS}" O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-raphiel-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
 elif [[ "${COMPILER_TYPE}" =~ "GCC4.9"* ]]; then
@@ -152,6 +154,11 @@ if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
         KERNELTYPE=nightly
         KERNELNAME="Acrux-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%Y%m%d-%H%M)"
         sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/acrux_defconfig
+        # Disable LTO on non-release builds
+        sed -i 's/CONFIG_LTO=y/CONFIG_LTO=n/g' arch/arm64/configs/acrux_defconfig
+        sed -i 's/# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/g' arch/arm64/configs/acrux_defconfig
+        sed -i 's/CONFIG_LTO_CLANG=y/CONFIG_LTO_CLANG=n/g' arch/arm64/configs/acrux_defconfig
+
 elif [[ "${PARSE_BRANCH}" =~ "ten"* ]]; then
         # For stable (ten) branch
         KERNELTYPE=stable
@@ -171,7 +178,7 @@ export TEMPZIPNAME="${KERNELNAME}-unsigned.zip"
 export ZIPNAME="${KERNELNAME}.zip"
 make O=out ARCH=arm64 acrux_defconfig
 if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
-        make -j"${JOBS}" O=out ARCH=arm64 CC=clang CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-linux-gnu-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
+        make -j"${JOBS}" CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
 elif [[ "${COMPILER_TYPE}" =~ "GCC10"* ]]; then
         make -j"${JOBS}" O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-raphiel-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-maestro-linux-gnueabi-"
 elif [[ "${COMPILER_TYPE}" =~ "GCC4.9"* ]]; then
@@ -206,4 +213,4 @@ java -jar zipsigner-3.0.jar ${TEMPZIPNAME} ${ZIPNAME}
 END=$(date +"%s")
 DIFF=$(( END - START ))
 tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
-tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @acruxci"
+tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @nysaci"
