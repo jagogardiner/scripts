@@ -30,7 +30,6 @@ echo "source ~/.aliases/aliases" >> ~/.zshrc
 git config --global user.name "nysascape"
 git config --global user.email "jago@nysascape.digital"
 git config --global credential.helper store
-git config --global format.signoff false
 git config --global commit.gpgsign true
 git config --global user.signingkey "A15571E738CE3CD4"
 
