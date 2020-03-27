@@ -38,7 +38,7 @@ git clone https://github.com/arter97/arm64-gcc --depth=1 ~/gcc9
 git clone https://github.com/arter97/arm32-gcc --depth=1 ~/gcc932
 
 # Add my hooks
-git clone https://github.com/nysascape/git-hooks ~/.git/hooks/
+git clone https://github.com/nysascape/githooks ~/.git/hooks/
 git config --global core.hooksPath ~/.git/hooks
 
 # Change shell to ZSH
