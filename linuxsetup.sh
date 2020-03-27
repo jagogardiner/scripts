@@ -30,6 +30,7 @@ echo "source ~/.aliases/aliases" >> ~/.zshrc
 git config --global user.name "nysascape"
 git config --global user.email "jago@nysascape.digital"
 git config --global credential.helper store
+git config --global format.signoff false
 git config --global commit.gpgsign true
 git config --global user.signingkey "A15571E738CE3CD4"
 
@@ -37,11 +38,9 @@ git config --global user.signingkey "A15571E738CE3CD4"
 git clone https://github.com/arter97/arm64-gcc --depth=1 ~/gcc9
 git clone https://github.com/arter97/arm32-gcc --depth=1 ~/gcc932
 
-# Add the Gerrit change-id hook
-mkdir -p ~/.git/hooks
+# Add my hooks
+git clone https://github.com/nysascape/git-hooks ~/.git/hooks/
 git config --global core.hooksPath ~/.git/hooks
-curl -Lo ~/.git/hooks/commit-msg https://review.aosip.dev/tools/hooks/commit-msg
-chmod u+x ~/.git/hooks/commit-msg
 
 # Change shell to ZSH
 chsh -s "$zsh"
