@@ -34,8 +34,8 @@ elif [[ "$*" =~ "gcc4.9"* ]]; then
 	COMPILER_TYPE='GCC4.9'
 else
         # Default to GCC from Arter
-        git clone https://github.com/arter97/arm64-gcc -b 9.x --depth=1 "${KERNELDIR}/gcc"
-        git clone https://github.com/arter97/arm32-gcc -b 9.x --depth=1 "${KERNELDIR}/gcc32"
+        git clone https://github.com/arter97/arm64-gcc --depth=1 "${KERNELDIR}/gcc"
+        git clone https://github.com/arter97/arm32-gcc --depth=1 "${KERNELDIR}/gcc32"
         COMPILER_STRING='GCC 9.x'
 	COMPILER_TYPE='GCC9.x'
 fi
