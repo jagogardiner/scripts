@@ -48,6 +48,8 @@ fi
 
 export KERNELTYPE KERNELNAME
 
+sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' arch/arm64/configs/acrux_defconfig
+
 # Workaround for long af kernel strings
 git config --global user.name "nysascape"
 git config --global user.email "nysadev@raphielgang.org"
