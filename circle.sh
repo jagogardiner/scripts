@@ -89,7 +89,6 @@ makekernel() {
     rm -rf ${ANYKERNEL}
     git clone https://github.com/nysascape/Acrux-AK3 -b master anykernel3
     kernelstringfix
-    START=$(date +"%s")
     make O=out ARCH=arm64 ${DEFCONFIG}
     if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
         make -j$(nproc --all) CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
@@ -151,6 +150,7 @@ tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
 	"Branch: <code>${PARSE_BRANCH}</code>" \
 	"Commit point: <code>${COMMIT_POINT}</code>" \
 	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>"
+START=$(date +"%s")
 makekernel || exit 1
 shipkernel
 setchinafw
