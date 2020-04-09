@@ -154,6 +154,7 @@ START=$(date +"%s")
 makekernel || exit 1
 shipkernel
 setchinafw
+setversioning
 makekernel || exit 1
 shipkernel
 END=$(date +"%s")
