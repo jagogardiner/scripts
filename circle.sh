@@ -130,7 +130,7 @@ shipkernel() {
 
 # Ship China firmware builds
 setchinafw() {
-    KERNELFW=China
+    export KERNELFW=China
     # Pick DSP change
     git cherry-pick 23dda5dd32a62488862985d7efc9d148e7f527f5
 }
@@ -140,7 +140,6 @@ fixcilto() {
     sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' arch/arm64/configs/${DEFCONFIG}
     sed -i 's/CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y/# CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is not set/g' arch/arm64/configs/${DEFCONFIG}
 }
-
 
 ## Start the kernel buildflow ##
 setversioning
