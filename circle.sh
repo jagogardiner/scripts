@@ -28,7 +28,7 @@ TG_GROUP=-1001435271206
 PATH="${KERNELDIR}/clang/bin:${PATH}"
 
 # Kernel revision
-KERNELRELEASE=v2-ten
+KERNELRELEASE=v2
 
 # Function to replace defconfig versioning
 setversioning() {
