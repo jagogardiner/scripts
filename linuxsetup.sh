@@ -5,11 +5,25 @@
 # Licensed under the Raphielscape Public License, Version 1.d (the "License");
 # you may not use this file except in compliance with the License.
 #
-# Let's install some packages
-if [[ "$*" =~ "arch"* ]]; then
-	sudo pacman -S zsh adb fastboot curl git code neofetch iwd dhcpcd gnome-terminal lightdm gnome-backgrounds lightdm-gtk-greeter telegram-desktop ttf-opensans
+
+# Install packages
+command -v pacman > /dev/null
+if [[ $? != 1 ]]; then
+        # The OS have pacman, it is probably Arch!
+	sudo pacman -S zsh adb fastboot curl git code neofetch iwd dhcpcd gnome-terminal lightdm gnome-backgrounds lightdm-gtk-greeter telegram-desktop ttf-opensans inetutils
+
+        # Install aurpkg
+        git clone --depth=1 https://aur.archlinux.org/aurpkg.git /tmp/aurpkg
+        cd /tmp/aurpkg
+        makepkg -si
+        cd ~
+
+        # Install Google Chrome
+        aurpkg -S google-chrome
+
 else
-	sudo apt-get -y install bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev zsh
+        # Apart from Arch, We only do Debian/Ubuntu.
+	sudo apt-get -y install bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gnupg2 gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev zsh apt-utils libelf-devel
 fi
 
 # Run oh-my-zsh installer unatteneded
@@ -32,6 +46,7 @@ git config --global user.email "jago@nysascape.digital"
 git config --global credential.helper store
 git config --global commit.gpgsign true
 git config --global user.signingkey "A15571E738CE3CD4"
+git config --global gpg.program gpg2
 
 # GCC 9 is always a good thing to have
 git clone https://github.com/arter97/arm64-gcc --depth=1 ~/gcc9
@@ -43,16 +58,3 @@ git config --global core.hooksPath ~/.git/hooks
 
 # Change shell to ZSH
 chsh -s "$zsh"
-
-# Arch stuff
-if [[ "$*" =~ "arch"* ]]; then
-	# Install aurpkg
-	git clone --depth=1 https://aur.archlinux.org/aurpkg.git /tmp/aurpkg
-	cd /tmp/aurpkg
-	makepkg -si
-	cd ~
-
-	# Install Google Chrome
-	aurpkg -S google-chrome
-fi
-
