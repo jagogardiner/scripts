@@ -23,7 +23,7 @@ if [[ $? != 1 ]]; then
 
 else
         # Apart from Arch, We only do Debian/Ubuntu.
-	sudo apt-get -y install bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev zsh
+	sudo apt-get -y install bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gnupg2 gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev zsh apt-utils libelf-devel
 fi
 
 # Run oh-my-zsh installer unatteneded
@@ -46,6 +46,7 @@ git config --global user.email "jago@nysascape.digital"
 git config --global credential.helper store
 git config --global commit.gpgsign true
 git config --global user.signingkey "A15571E738CE3CD4"
+git config --global gpg.program gpg2
 
 # GCC 9 is always a good thing to have
 git clone https://github.com/arter97/arm64-gcc --depth=1 ~/gcc9
