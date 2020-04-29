@@ -41,7 +41,7 @@ CIPROVIDER=Local
 KERNELFW=Global
 
 # Clone our AnyKernel3 branch to KERNELDIR
-git clone https://github.com/nysascape/Acrux-AK3 -b master ${ACRUXPATH}/anykernel3
+git clone https://github.com/nysascape/AnyKernel3 -b master ${ACRUXPATH}/anykernel3
 export ANYKERNEL=${ACRUXPATH}/anykernel3
 
 git clone https://github.com/fabianonline/telegram.sh/ telegram
