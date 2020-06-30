@@ -27,6 +27,7 @@ TG_GROUP=-1001401121422
 
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:${PATH}"
+which clang
 
 # Init submodules
 git submodule update --init --recursive
@@ -78,7 +79,7 @@ makekernel() {
     rm -rf ${ANYKERNEL}
     git clone https://github.com/nysascape/AnyKernel3 -b master anykernel3
     kernelstringfix
-    make O=out ARCH=arm64 ${DEFCONFIG}
+    make -j$(nproc --all) CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64 ${DEFCONFIG}
     make -j$(nproc --all) CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
 
     # Check if compilation is done successfully.
