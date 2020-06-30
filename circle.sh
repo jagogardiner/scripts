@@ -11,11 +11,11 @@ export TELEGRAM_TOKEN=${BOT_API_TOKEN}
 export ANYKERNEL=$(pwd)/anykernel3
 
 # Avoid hardcoding things
-KERNEL=Acrux
-DEFCONFIG=acrux_defconfig
-DEVICE=Platina
+KERNEL=nysa
+DEFCONFIG=b1c1_defconfig
+DEVICES_TO_COMPILE="Pixel 3/XL, Pixel 3a/XL"
+DEVICE="Pixel3"
 CIPROVIDER=CircleCI
-KERNELFW=Global
 PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PARSE_ORIGIN="$(git config --get remote.origin.url)"
 COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
@@ -27,27 +27,12 @@ TG_GROUP=-1001435271206
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:${PATH}"
 
-# Kernel revision
-KERNELRELEASE=v2
-
 # Function to replace defconfig versioning
 setversioning() {
-    if [[ "${PARSE_BRANCH}" =~ "staging"* ]]; then
-    	# For staging branch
-	    KERNELTYPE=nightly
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-Nightly-${KERNELFW}-$(date +%y%m%d-%H%M)"
-	    sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    elif [[ "${PARSE_BRANCH}" =~ "ten"* ]]; then
-	    # For stable (ten) branch
-	    KERNELTYPE=stable
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-Release-${KERNELFW}-$(date +%y%m%d-%H%M)"
-        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    else
-	    # Dunno when this will happen but we will cover, just in case
-	    KERNELTYPE=${PARSE_BRANCH}
-	    KERNELNAME="${KERNEL}-${KERNELRELEASE}-${PARSE_BRANCH}-${KERNELFW}-$(date +%y%m%d-%H%M)"
-        sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
-    fi
+    # For staging branch
+	KERNELTYPE=nightly
+	KERNELNAME="${KERNEL}-${DEVICE}-$(date +%y%m%d-%H%M)-Nightly"
+	sed -i "50s/.*/CONFIG_LOCALVERSION=\"-${KERNELNAME}\"/g" arch/arm64/configs/${DEFCONFIG}
 
     # Export our new localversion and zipnames
     export KERNELTYPE KERNELNAME
@@ -78,7 +63,7 @@ tg_channelcast() {
 # Fix long kernel strings
 kernelstringfix() {
     git config --global user.name "nysascape"
-    git config --global user.email "nysadev@raphielgang.org"
+    git config --global user.email "jago@nysascape.digital"
     git add .
     git commit -m "stop adding dirty"
 }
@@ -90,19 +75,15 @@ makekernel() {
     git clone https://github.com/nysascape/AnyKernel3 -b master anykernel3
     kernelstringfix
     make O=out ARCH=arm64 ${DEFCONFIG}
-    if [[ "${COMPILER_TYPE}" =~ "clang"* ]]; then
-        make -j$(nproc --all) CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
-    else
-	    make -j$(nproc --all) O=out ARCH=arm64 CROSS_COMPILE="${KERNELDIR}/gcc/bin/aarch64-elf-" CROSS_COMPILE_ARM32="${KERNELDIR}/gcc32/bin/arm-eabi-"
-    fi
+    make -j$(nproc --all) CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out ARCH=arm64
 
     # Check if compilation is done successfully.
-    if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb ]; then
+    if ! [ -f "${OUTDIR}"/arch/arm64/boot/Image.lz4-dtb ]; then
 	    END=$(date +"%s")
 	    DIFF=$(( END - START ))
 	    echo -e "Kernel compilation failed, See buildlog to fix errors"
-	    tg_channelcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
-	    tg_groupcast "Build for ${DEVICE} (${KERNELFW}) <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @nysascape! @nysaci"
+	    tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
+	    tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @nysascape!"
 	    exit 1
     fi
 }
@@ -110,7 +91,7 @@ makekernel() {
 # Ship the compiled kernel
 shipkernel() {
     # Copy compiled kernel
-    cp "${OUTDIR}"/arch/arm64/boot/Image.gz-dtb "${ANYKERNEL}"/
+    cp "${OUTDIR}"/arch/arm64/boot/Image.lz4-dtb "${ANYKERNEL}"/
 
     # Zip the kernel, or fail
     cd "${ANYKERNEL}" || exit
@@ -127,37 +108,32 @@ shipkernel() {
     cd ..
 }
 
-# Ship China firmware builds
-setchinafw() {
-    export KERNELFW=China
-    # Pick DSP change
-    git cherry-pick 23dda5dd32a62488862985d7efc9d148e7f527f5
+gcast() {
+    tg_groupcast "${DEVICE} kernel compilation clocked at $(date +%Y%m%d-%H%M)!"
 }
 
-# Fix for CI builds running out of memory
-fixcilto() {
-    sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' arch/arm64/configs/${DEFCONFIG}
-    sed -i 's/CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y/# CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is not set/g' arch/arm64/configs/${DEFCONFIG}
+ccast() {
+    tg_channelcast "Device(s): <b>${DEVICES_TO_COMPILE}</b>" \
+        "Kernel: <code>${KERNEL}, release ${KERNELTYPE}</code>" \
+        "Compiler: <code>${COMPILER_STRING}</code>" \
+    	"Branch: <code>${PARSE_BRANCH}</code>" \
+    	"Commit point: <code>${COMMIT_POINT}</code>" \
+    	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>"
 }
 
 ## Start the kernel buildflow ##
 setversioning
-fixcilto
-tg_groupcast "${KERNEL} compilation clocked at $(date +%Y%m%d-%H%M)!"
-tg_channelcast "Compiler: <code>${COMPILER_STRING}</code>" \
-	"Device: <b>${DEVICE}</b>" \
-	"Kernel: <code>${KERNEL}, release ${KERNELRELEASE}</code>" \
-	"Branch: <code>${PARSE_BRANCH}</code>" \
-	"Commit point: <code>${COMMIT_POINT}</code>" \
-	"Clocked at: <code>$(date +%Y%m%d-%H%M)</code>"
 START=$(date +"%s")
+tg_channelcast "Compiling ${DEVICE}..."
 makekernel || exit 1
 shipkernel
-setchinafw
+DEVICE="Pixel3a"
+DEFCONFIG=b4s4_defconfig
 setversioning
+tg_channelcast "Compiling ${DEVICE}..."
 makekernel || exit 1
 shipkernel
 END=$(date +"%s")
 DIFF=$(( END - START ))
-tg_channelcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
-tg_groupcast "Build for ${DEVICE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! @nysaci"
+tg_channelcast "Build(s) for ${DEVICES_TO_COMPILE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
+tg_groupcast "Build(s) for ${DEVICES_TO_COMPILE} with ${COMPILER_STRING} took $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)!"
