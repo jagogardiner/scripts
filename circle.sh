@@ -15,6 +15,7 @@ KERNEL=nysa
 DEFCONFIG=b1c1_defconfig
 DEVICES_TO_COMPILE="Pixel 3/XL, Pixel 3a/XL"
 DEVICE="Pixel3"
+DEVICE_PRETTY="Pixel 3 (XL)"
 CIPROVIDER=CircleCI
 PARSE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PARSE_ORIGIN="$(git config --get remote.origin.url)"
@@ -26,6 +27,9 @@ TG_GROUP=-1001401121422
 
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:${PATH}"
+
+# Init submodules
+git submodule update --init --recursive
 
 # Function to replace defconfig versioning
 setversioning() {
@@ -82,8 +86,8 @@ makekernel() {
 	    END=$(date +"%s")
 	    DIFF=$(( END - START ))
 	    echo -e "Kernel compilation failed, See buildlog to fix errors"
-	    tg_channelcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
-	    tg_groupcast "Build for ${DEVICE} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @nysascape!"
+	    tg_channelcast "Build for ${DEVICE_PRETTY} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors!"
+	    tg_groupcast "Build for ${DEVICE_PRETTY} <b>failed</b> in $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)! Check ${CIPROVIDER} for errors @nysascape!"
 	    exit 1
     fi
 }
@@ -123,11 +127,14 @@ ccast() {
 
 ## Start the kernel buildflow ##
 setversioning
-START=$(date +"%s")
+ccast
 tg_channelcast "Compiling ${DEVICE}..."
+gcast
+START=$(date +"%s")
 makekernel || exit 1
 shipkernel
 DEVICE="Pixel3a"
+DEVICE_PRETTY="Pixel 3a (XL)"
 DEFCONFIG=b4s4_defconfig
 setversioning
 tg_channelcast "Compiling ${DEVICE}..."
