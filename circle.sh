@@ -21,8 +21,8 @@ PARSE_ORIGIN="$(git config --get remote.origin.url)"
 COMMIT_POINT="$(git log --pretty=format:'%h : %s' -1)"
 
 # Kernel groups
-CI_CHANNEL=-1001420038245
-TG_GROUP=-1001435271206
+CI_CHANNEL=-1001308609321
+TG_GROUP=-1001401121422
 
 # Clang is annoying
 PATH="${KERNELDIR}/clang/bin:${PATH}"
