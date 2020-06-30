@@ -128,7 +128,7 @@ ccast() {
 ## Start the kernel buildflow ##
 setversioning
 ccast
-tg_channelcast "Compiling ${DEVICE}..."
+tg_channelcast "Compiling ${DEVICE_PRETTY}..."
 gcast
 START=$(date +"%s")
 makekernel || exit 1
@@ -137,7 +137,7 @@ DEVICE="Pixel3a"
 DEVICE_PRETTY="Pixel 3a (XL)"
 DEFCONFIG=b4s4_defconfig
 setversioning
-tg_channelcast "Compiling ${DEVICE}..."
+tg_channelcast "Compiling ${DEVICE_PRETTY}..."
 makekernel || exit 1
 shipkernel
 END=$(date +"%s")
