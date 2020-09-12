@@ -41,7 +41,7 @@ sed -i 's/plugins=(git)/plugins=(git cp gpg-agent)/g' ~/.zshrc
 
 # Git configurations
 git config --global user.name "nysascape"
-git config --global user.email "jago@nysascape.digital"
+git config --global user.email "jago@nysascape.tech"
 git config --global credential.helper store
 git config --global commit.gpgsign true
 git config --global user.signingkey "A15571E738CE3CD4"
