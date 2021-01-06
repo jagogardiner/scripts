@@ -44,7 +44,7 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/cu
 # Add zsh plugins
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-sed -i 's/plugins=(git)/plugins=(git cp gpg-agent ssh-agent zsh-syntax-highlighting zsh-autosuggestions )/g' ~/.zshrc
+sed -i 's/plugins=(git)/plugins=(git cp gpg-agent ssh-agent zsh-syntax-highlighting zsh-autosuggestions sudo)/g' ~/.zshrc
 
 # Git configurations
 git config --global user.name "nysascape"
