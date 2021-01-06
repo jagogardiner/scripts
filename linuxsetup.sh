@@ -8,19 +8,24 @@
 
 # Install packages
 command -v pacman > /dev/null
-if [[ $? != 1 ]]; then
-        # The OS have pacman, it is probably Arch!
-	sudo pacman -S zsh adb fastboot curl git code neofetch iwd dhcpcd gnome-terminal lightdm gnome-backgrounds lightdm-gtk-greeter telegram-desktop ttf-opensans inetutils
+uname=$(uname -a)
 
+if [[ $? != 1 ]]; then
+	# Make sure base-devel is installed
+	sudo pacman -S base-devel
         # Install aurpkg
-        git clone --depth=1 https://aur.archlinux.org/aurpkg.git /tmp/aurpkg
-        cd /tmp/aurpkg
+        git clone --depth=1 https://aur.archlinux.org/trizen.git /tmp/trizen
+        cd /tmp/trizen
         makepkg -si
         cd ~
-
-        # Install Google Chrome
-        aurpkg -S google-chrome
-
+	if [[ $uname != *"microsoft"* ]]; then
+        	# The OS have pacman, it is probably Arch!
+		sudo pacman -S zsh adb fastboot curl git code neofetch iwd dhcpcd gnome-terminal lightdm gnome-backgrounds lightdm-gtk-greeter telegram-desktop ttf-opensans inetutils
+	        # Install Google Chrome
+	        trizen -S google-chrome
+	else
+		sudo pacman -S inetutils openssh git
+	fi
 else
         # Apart from Arch, We only do Debian/Ubuntu.
 	sudo apt-get -y install bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gnupg2 gperf imagemagick lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev zsh apt-utils
@@ -37,7 +42,9 @@ echo "source ~/.aliases/aliases" >> ~/.zshrc
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
 
 # Add zsh plugins
-sed -i 's/plugins=(git)/plugins=(git cp gpg-agent)/g' ~/.zshrc
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+sed -i 's/plugins=(git)/plugins=(git cp gpg-agent ssh-agent zsh-syntax-highlighting zsh-autosuggestions )/g' ~/.zshrc
 
 # Git configurations
 git config --global user.name "nysascape"
@@ -45,10 +52,7 @@ git config --global user.email "jago@nysascape.tech"
 git config --global credential.helper store
 git config --global commit.gpgsign true
 git config --global user.signingkey "A15571E738CE3CD4"
-
-# GCC 9 is always a good thing to have
-git clone https://github.com/arter97/arm64-gcc --depth=1 ~/gcc9
-git clone https://github.com/arter97/arm32-gcc --depth=1 ~/gcc932
+git config --global core.editor nano
 
 # Add my hooks
 git clone https://github.com/nysascape/githooks ~/.git/hooks/
