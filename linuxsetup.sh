@@ -23,7 +23,7 @@ git config --global user.name "Jago Gardiner"
 git config --global user.email "jagogardiner@gmail.com"
 git config --global credential.helper store
 git config --global commit.gpgsign true
-git config --global user.signingkey "A15571E738CE3CD4"
+git config --global user.signingkey "4F0F91DBC451CA96"
 git config --global core.editor nano
 
 # Add my hooks
