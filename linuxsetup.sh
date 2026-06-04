@@ -16,3 +16,4 @@ sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ~
 # Git configurations
 git config --global user.name "Jago Gardiner"
 git config --global core.editor nano
+git config --global push.autoSetupRemote true
