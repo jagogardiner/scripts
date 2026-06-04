@@ -3,6 +3,7 @@
 # Clone in my aliases
 git clone https://github.com/jagogardiner/aliases ~/.aliases
 echo "source ~/.aliases/aliases" >> ~/.zshrc
+echo "source ~/.aliases/hidden" >> ~/.zshrc
 
 # Powerlevel10k
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
